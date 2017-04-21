@@ -7,8 +7,10 @@ class Welcome extends CI_Controller {
 
 	public function __construct(){
 		parent::__construct();
-		$this->load->helper('url');
+		$this->load->helper(array('url', 'form'));
 		$this->load->model('Users_model');
+        $this->load->library(array('upload', 'form_validation', 'pagination'));
+
         if(is_null($this->session->userdata('logged_in'))){
             redirect(base_url());
         }
@@ -31,9 +33,20 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-            $users['user_list'] = $this->Users_model->get_all_users();
-            //var_dump($users);
-            $this->load->view('contact/view', $users);
+        $config = array();
+        $config["base_url"] = site_url() . "/Welcome/index";
+        $config["total_rows"] = $this->Users_model->record_count();
+        $config["per_page"] = 3;
+        $config["uri_segment"] = 3;
+
+        $this->pagination->initialize($config);
+        $page = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+        $data["results"] = $this->Users_model->fetch_users($config["per_page"], $page);
+        $data["links"] = $this->pagination->create_links();
+//
+//        $users['user_list'] = $this->Users_model->get_all_users();
+//        var_dump($data);
+        $this->load->view('contact/view', $data);
 	}
 
 	public function create(){
@@ -45,24 +58,64 @@ class Welcome extends CI_Controller {
 		$this->load->view('contact/edit', $user);
 	}
 
-	public function add_user(){
+	public function add_user()
+    {
+        $this->form_validation->set_rules('first_name', 'First Name', 'required');
+        $this->form_validation->set_rules('last_name', 'Last Name','required');
+        $this->form_validation->set_rules('email', 'Email', 'required|is_unique[users.email]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[12]');
+        $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
+        $this->form_validation->set_rules('phone', 'Phone Number', 'required|regex_match[/^[0-9]{10}$/]');
 
-	    $password = $this->input->post('password');
-		$user = array(
-			'first_name' => $this->input->post('first_name'),
-		 	'last_name' => $this->input->post('last_name'),
-			'email' => $this->input->post('email'),
-            'password' => $this->bcrypt->hash_password($password),
-			'phone_number' => $this->input->post('phone_number'),
-			);
-		if($this->Users_model->insert_User($user)){
-			redirect(base_url());
-		}
-	}
+        if ($this->form_validation->run() == FALSE)
+        {
+            $this->load->view('contact/create');
+        }
+        else
+        {
+
+            $password = $this->input->post('password');
+
+            $file_name = $this->file_upload('file');
+            if ($this->Users_model->insert_User($file_name, $password)) {
+                redirect(base_url());
+            }
+    }
+    }
+
+
+    public function file_upload($file)
+    {
+        //Set the config
+        $config['upload_path'] = './uploads/'; //Use relative or absolute path
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['max_size'] = '10000';
+        $config['max_width'] = '1920';
+        $config['max_height'] = '1080';
+        $config['overwrite'] = FALSE; //If the file exists it will be saved with a progressive number appended
+
+        //Initialize
+        $this->load->library('upload');
+        $this->upload->initialize($config);
+
+        //Upload file
+        if (!$this->upload->do_upload("file")) {
+
+            //echo the errors
+            echo $this->upload->display_errors();
+        } else {
+            //If the upload success
+            $file_name = $this->upload->file_name;
+
+            //Save the file name into the db
+            return $file_name;
+
+        }
+    }
 
 	public function edit_user(){
-
-		if($this->Users_model->update_User()){
+        $file_name = $this->file_upload('file');
+		if($this->Users_model->update_User($file_name)){
 						redirect(base_url());
 		}
 

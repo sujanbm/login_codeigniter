@@ -1,9 +1,11 @@
 <?php require_once("header.php") ?>
+<h3>User List</h3>
+<hr>
+<br>
   <div class="row">
-   <h1>User List</h1>
-<!--   <a href="--><?php //echo site_url();?><!--/Welcome/create"><button type="button" class="btn btn-success">Add User</button></a>-->
    <table class="table table-bordered">
        <tr>
+           <th>Picture</th>
            <th>First Name</th>
            <th>Last Name</th>
            <th>Email</th>
@@ -11,8 +13,9 @@
            <th>Edit</th>
 
        </tr>
-       <?php foreach ($user_list as $user): ?>
+       <?php foreach ($results as $user): ?>
            <tr>
+               <td><img src="<?php echo base_url();?>/uploads/<?php echo $user->file?>" width="100px" height="auto" alt=""></td>
                <td><?php echo $user->first_name; ?></td>
                <td><?php echo $user->last_name; ?></td>
                <td><?php echo $user->email; ?></td>
@@ -22,5 +25,6 @@
            </tr>
        <?php endforeach; ?>
    </table>
+      <p class="pagination"><?php echo $links; ?></p>
 </div>
 <?php include_once("footer.php");
