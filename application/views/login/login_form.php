@@ -13,9 +13,10 @@ if (isset($this->session->userdata['logged_in'])) {
 <body>
 <div class="container">
 <h1>Login</h1>
+    <?php echo validation_errors();?>
 <div class="row">
 
-    <form action="<?php echo base_url()?>/index.php/Login/authenticate" class="form" roles="form" method="POST">
+    <form action="<?php echo base_url()?>/index.php/Login/" class="form" roles="form" method="POST">
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" class="form-control" id="email" name="email" required>
@@ -23,6 +24,11 @@ if (isset($this->session->userdata['logged_in'])) {
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <?php echo $image ?>
+        <div class="form-group">
+            <label for="captcha">Enter the words shown in the image above</label>
+            <input type="text" class="form-control" id="captcha" name="captcha" required>
         </div>
         <div class="form-group">
             <button class="btn btn-success">Login</button>

@@ -58,6 +58,7 @@ class Welcome extends CI_Controller {
 		$this->load->view('contact/edit', $user);
 	}
 
+
 	public function add_user()
     {
         $this->form_validation->set_rules('first_name', 'First Name', 'required');
@@ -123,11 +124,68 @@ class Welcome extends CI_Controller {
 	}
 
 	public function delete($id){
-			if($this->Users_model->delete_User($id)){
-				redirect(base_url());
-			}
+        if($this->Users_model->delete_User($id)){
+            redirect(base_url());
+        }
 
 	}
+
+	public function add_photos($id){
+
+	    $users['user']= $this->Users_model->get_User_By_Id($id);
+        $users['files'] = $this->Users_model->get_Photos($id);
+        $this->load->view('contact/user', $users);
+    }
+
+	public function multiple_upload($id){
+
+        //Set the config
+        $config['upload_path'] = './uploads/'; //Use relative or absolute path
+        $config['allowed_types'] = 'gif|jpg|png';
+        $config['max_size'] = '10000';
+        $config['max_width'] = '1920';
+        $config['max_height'] = '1080';
+        $config['overwrite'] = FALSE; //If the file exists it will be saved with a progressive number appended
+
+        //Initialize
+        $this->load->library('upload');
+        $this->upload->initialize($config);
+
+        $filesCount = count($_FILES['files']['name']);
+
+
+        for($i = 0 ; $i<$filesCount ; $i++){
+
+            $_FILES['file']['name'] = $_FILES['files']['name'][$i];
+            $_FILES['file']['type'] = $_FILES['files']['type'][$i];
+            $_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+            $_FILES['file']['error'] = $_FILES['files']['error'][$i];
+            $_FILES['file']['size'] = $_FILES['files']['size'][$i];
+
+            if($this->upload->do_upload('file')){
+                $fileData = $this->upload->data();
+                $uploadData[$i]['file_name'] = $fileData['file_name'];
+                $uploadData[$i]['contact_id'] = $id;
+            }
+            else{
+                echo $this->upload->display_errors();
+            }
+        }
+
+        if(!empty($uploadData)){
+            //Insert file information into the database
+            if( $this->Users_model->insert_Photos($uploadData))
+            {
+                redirect(base_url()) ;
+            }
+            else{
+                echo "Error during upload";
+            }
+
+        }
+
+    }
+
 
 	public function logout(){
 	    $this->session->unset_userdata('logged_in');

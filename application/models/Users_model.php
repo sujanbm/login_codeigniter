@@ -21,8 +21,10 @@ class Users_model extends CI_Model{
           'phone_number' => $this->input->post('phone_number'),
           'file' => $file_name
       );
+
     return $this->db->insert('users', $user);
   }
+
 
   public function get_User_By_Id($id){
     $this->db->where(array('id' => $id));
@@ -53,7 +55,23 @@ class Users_model extends CI_Model{
       return $this->db->insert('photos', $files);
   }
 
-  public function login(){
+    public function insert_Photos($file_names = array()){
+
+        return $this->db->insert_batch('photos', $file_names);
+
+    }
+
+    public function get_Photos($id){
+
+        $this->db->where(array('contact_id'=>$id));
+        $query = $this->db->get('photos');
+
+        return $query->result();
+
+
+    }
+
+    public function login(){
       $email = $this->input->post('email');
       $this->db->select('id, email, password');
       $this->db->from('users');
