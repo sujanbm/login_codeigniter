@@ -32,11 +32,16 @@
            </div>
            <div class="form-group">
                <label for="message">Phone</label>
-               <?php echo form_error('phone') ?>
+               <?php echo form_error('phone_number') ?>
                <input type="text" class= "form-control" id="phone_number" name="phone_number" required>
            </div>
            <div class="form-group">
-               <input type="file" name="file"  multiple id="file">
+               <label for="file">Profile Picture</label>
+               <input type="file" name="file"  id="file">
+           </div>
+           <div class="form-group">
+               <label for="photos">Additional Photos</label>
+               <input type="file" name="files[]" multiple id="files">
            </div>
            <div class="form-group">
                <button class="btn btn-success">Save</button>

@@ -64,9 +64,9 @@ class Welcome extends CI_Controller {
         $this->form_validation->set_rules('first_name', 'First Name', 'required');
         $this->form_validation->set_rules('last_name', 'Last Name','required');
         $this->form_validation->set_rules('email', 'Email', 'required|is_unique[users.email]');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[12]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[25]');
         $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
-        $this->form_validation->set_rules('phone', 'Phone Number', 'required|regex_match[/^[0-9]{10}$/]');
+        $this->form_validation->set_rules('phone_number', 'Phone Number', 'required');
 
         if ($this->form_validation->run() == FALSE)
         {
@@ -78,8 +78,11 @@ class Welcome extends CI_Controller {
             $password = $this->input->post('password');
 
             $file_name = $this->file_upload('file');
+
             if ($this->Users_model->insert_User($file_name, $password)) {
-                redirect(base_url());
+                $id = $this->Users_model->get_Last_Id();
+                $this->multiple_upload($id);
+//                redirect(base_url());
             }
     }
     }
@@ -168,7 +171,8 @@ class Welcome extends CI_Controller {
                 $uploadData[$i]['contact_id'] = $id;
             }
             else{
-                echo $this->upload->display_errors();
+//                $message = $this->upload->display_errors();
+//                echo "<script type='text/javascript'>alert('$message');</script>";
             }
         }
 
@@ -176,7 +180,7 @@ class Welcome extends CI_Controller {
             //Insert file information into the database
             if( $this->Users_model->insert_Photos($uploadData))
             {
-                redirect(base_url()) ;
+                $this->add_photos($id) ;
             }
             else{
                 echo "Error during upload";

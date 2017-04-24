@@ -25,6 +25,10 @@ class Users_model extends CI_Model{
     return $this->db->insert('users', $user);
   }
 
+  public function get_Last_Id(){
+      $id = $this->db->insert_id();
+      return $id;
+  }
 
   public function get_User_By_Id($id){
     $this->db->where(array('id' => $id));
