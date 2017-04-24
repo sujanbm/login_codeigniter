@@ -36,11 +36,11 @@
                <input type="text" class= "form-control" id="phone_number" name="phone_number" required>
            </div>
            <div class="form-group">
-               <label for="file">Profile Picture</label>
+               <label for="file">Profile Picture</label><br>
                <input type="file" name="file"  id="file">
            </div>
            <div class="form-group">
-               <label for="photos">Additional Photos</label>
+               <label for="photos">Additional Photos</label><br>
                <input type="file" name="files[]" multiple id="files">
            </div>
            <div class="form-group">

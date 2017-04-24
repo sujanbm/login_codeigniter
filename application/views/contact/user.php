@@ -38,7 +38,7 @@
 
 
 
-        <form class = "form" action="<?php echo site_url()?>/Welcome/multiple_upload/<?php echo $user->id ?>" method = "POST" enctype="multipart/form-data">
+        <form class = "form" action="<?php echo site_url()?>/Welcome/files_upload/<?php echo $user->id ?>" method = "POST" enctype="multipart/form-data">
 
             <div class="form-group">
                 <input type="file" name="files[]"  multiple id="files">
