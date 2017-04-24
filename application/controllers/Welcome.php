@@ -156,38 +156,38 @@ class Welcome extends CI_Controller {
 
         $filesCount = count($_FILES['files']['name']);
 
+        if($filesCount != 0) {
+            for ($i = 0; $i < $filesCount; $i++) {
 
-        for($i = 0 ; $i<$filesCount ; $i++){
+                $_FILES['file']['name'] = $_FILES['files']['name'][$i];
+                $_FILES['file']['type'] = $_FILES['files']['type'][$i];
+                $_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
+                $_FILES['file']['error'] = $_FILES['files']['error'][$i];
+                $_FILES['file']['size'] = $_FILES['files']['size'][$i];
 
-            $_FILES['file']['name'] = $_FILES['files']['name'][$i];
-            $_FILES['file']['type'] = $_FILES['files']['type'][$i];
-            $_FILES['file']['tmp_name'] = $_FILES['files']['tmp_name'][$i];
-            $_FILES['file']['error'] = $_FILES['files']['error'][$i];
-            $_FILES['file']['size'] = $_FILES['files']['size'][$i];
-
-            if($this->upload->do_upload('file')){
-                $fileData = $this->upload->data();
-                $uploadData[$i]['file_name'] = $fileData['file_name'];
-                $uploadData[$i]['contact_id'] = $id;
-            }
+                if ($this->upload->do_upload('file')) {
+                    $fileData = $this->upload->data();
+                    $uploadData[$i]['file_name'] = $fileData['file_name'];
+                    $uploadData[$i]['contact_id'] = $id;
+                }
 //            else{
 ////                $message = $this->upload->display_errors();
 ////                echo "<script type='text/javascript'>alert('$message');</script>";
 //            }
-        }
-
-        if(!empty($uploadData)){
-            //Insert file information into the database
-            if( $this->Users_model->insert_Photos($uploadData))
-            {
-                $this->add_photos($id) ;
-            }
-            else{
-                $message = "Error during Upload";
-                echo "<script type='text/javascript'> alert('$message');</script>";
             }
 
+            if (!empty($uploadData)) {
+                //Insert file information into the database
+                if ($this->Users_model->insert_Photos($uploadData)) {
+                    $this->add_photos($id);
+                } else {
+                    $message = "Error during Upload";
+                    echo "<script type='text/javascript'> alert('$message');</script>";
+                }
+
+            }
         }
+        $this->add_photos($id);
     }
 
 
