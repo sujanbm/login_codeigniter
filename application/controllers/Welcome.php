@@ -170,10 +170,10 @@ class Welcome extends CI_Controller {
                 $uploadData[$i]['file_name'] = $fileData['file_name'];
                 $uploadData[$i]['contact_id'] = $id;
             }
-            else{
-//                $message = $this->upload->display_errors();
-//                echo "<script type='text/javascript'>alert('$message');</script>";
-            }
+//            else{
+////                $message = $this->upload->display_errors();
+////                echo "<script type='text/javascript'>alert('$message');</script>";
+//            }
         }
 
         if(!empty($uploadData)){
@@ -183,11 +183,11 @@ class Welcome extends CI_Controller {
                 $this->add_photos($id) ;
             }
             else{
-                echo "Error during upload";
+                $message = "Error during Upload";
+                echo "<script type='text/javascript'> alert('$message');</script>";
             }
 
         }
-
     }
 
 

@@ -65,7 +65,8 @@ class Login extends CI_Controller {
                 'img_width'     => '150',
                 'img_height'    => 50,
                 'word_length'   => 5,
-                'font_size'     => 20
+                'font_size'     => 20,
+                'expiration'    => 7200
             );
             $this->load->helper('captcha');
             $data = create_captcha($config);
