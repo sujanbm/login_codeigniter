@@ -16,7 +16,13 @@
        </tr>
        <?php foreach ($results as $user): ?>
            <tr>
-               <td><img src="<?php echo base_url();?>/uploads/<?php echo $user->file?>" width="auto" height="75px" alt=""></td>
+               <td>
+                   <?php if(file_exists("./uploads/$user->file")){?>
+                       <img src="<?php echo base_url();?>/uploads/<?php echo $user->file?>" width="auto" height="75px" alt="">
+                    <?php }else{ ?>
+                       <img src="<?php echo base_url();?>/uploads/facebook-avatar.jpg?>" width="auto" height="75px" alt="">
+                   <?php } ?>
+               </td>
                <td><?php echo $user->first_name; ?></td>
                <td><?php echo $user->last_name; ?></td>
                <td><?php echo $user->email; ?></td>

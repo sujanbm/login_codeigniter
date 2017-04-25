@@ -72,6 +72,21 @@ class Users_model extends CI_Model{
       return $this->db->insert('photos', $files);
   }
 
+  public function update_Photo($photoId, $file_name){
+
+      $this->db->trans_begin();
+      $this->db->where(array('id'=>$photoId));
+      $this->db->update('photos',array('file_name'=>$file_name));
+      $this->db->trans_complete();
+      if ($this->db->trans_status()===FALSE){
+          $this->db->trans_rollback();
+          return FALSE;
+      }else{
+          $this->db->trans_commit();
+          return TRUE;
+      }
+  }
+
     public function insert_Photos($file_names = array()){
 
         return $this->db->insert_batch('photos', $file_names);

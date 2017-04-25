@@ -155,7 +155,9 @@ class Welcome extends CI_Controller {
             foreach ($photos as $photo){
                 $file_name = $photo->file_name;
                 $path = $_SERVER['DOCUMENT_ROOT'].'/Contact/uploads/'.$file_name;
-                unlink($path);
+                if(file_exists($path)) {
+                    unlink($path);
+                }
 
             }
             redirect(base_url());
@@ -178,7 +180,7 @@ class Welcome extends CI_Controller {
         $data = $this->multiple_uploads->multiple_uploads($id);
         if($data != FALSE){
             if ($this->Users_model->insert_Photos($data)) {
-                $this->profile($id);
+               $this->profile($id);
             } else {
                 $message = "Error during Upload";
                 echo "<script type='text/javascript'> alert('$message');</script>";
@@ -192,13 +194,30 @@ class Welcome extends CI_Controller {
 
     }
 
+    public function file_update($id, $photoId){
+
+        $file_name = $this->file_upload('file');
+            if($this->Users_model->update_Photo($photoId, $file_name)){
+                $this->profile($id);
+            }else{
+                $message = "Error during Upload";
+                echo "<script type='text/javascript'> alert('$message'); </script>";
+                $this->profile($id);
+            }
+
+    }
+
+
+
 
     public function delete_photo($userId, $photoId){
         $photo = $this->Users_model->get_Photo($photoId);
         $file_name = $photo->file_name;
         if($this->Users_model->delete_photo($userId, $photoId)){
             $path = $_SERVER['DOCUMENT_ROOT'].'/Contact/uploads/'.$file_name;
-            unlink($path);
+            if(file_exists($path)) {
+                unlink($path);
+            }
             $this->profile($userId);
         }else{
             echo "Error";
