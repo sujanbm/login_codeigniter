@@ -22,7 +22,7 @@
                <td><?php echo $user->phone_number; ?></td>
                <td> <a href="<?php echo site_url();?>/Welcome/edit/<?php echo $user->id ?>"><button type="button" class="btn btn-primary">Edit</button></a>
                     <a href="<?php echo site_url()?>/Welcome/delete/<?php echo $user->id?>"><button type="button" class="btn btn-danger" onclick="return confirm('Are you sure want to delete');">Delete</button></a>
-                    <a href="<?php echo site_url()?>/Welcome/add_photos/<?php echo $user->id ?>"><button class = "btn btn-success">View</button></a>
+                    <a href="<?php echo site_url()?>/Welcome/profile/<?php echo $user->id ?>"><button class = "btn btn-success">View</button></a>
                </td>
 
            </tr>

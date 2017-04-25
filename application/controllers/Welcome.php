@@ -69,7 +69,12 @@ class Welcome extends CI_Controller {
         $this->form_validation->set_rules('email', 'Email', 'required|is_unique[users.email]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]|max_length[25]');
         $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
-        $this->form_validation->set_rules('phone_number', 'Phone Number', 'required');
+        $this->form_validation->set_rules('phone_number', 'Phone Number', array('required',array('check',array($this->Users_model, 'phone_check') ) ));
+        $this->form_validation->set_message('check', 'Phone number already taken');
+//        $this->form_validation->set_rules('phone_number', 'Phone Number', 'required|callback_phone_check');
+        $this->form_validation->set_rules('files', 'Profile Photo', 'required');
+        $this->form_validation->set_rules('file', 'Photos', 'required');
+
 
         if ($this->form_validation->run() == FALSE)
         {
@@ -86,16 +91,18 @@ class Welcome extends CI_Controller {
                 $id = $this->Users_model->get_Last_Id();
                 $this->load->library('multiple_uploads');
 
-
                $data = $this->multiple_uploads->multiple_uploads($id);
-
-                if ($this->Users_model->insert_Photos($data)) {
-                    $this->add_photos($id);
-                } else {
-                    $message = "Error during Upload";
-                    echo "<script type='text/javascript'> alert('$message');</script>";
+                if($data != FALSE){
+                    if ($this->Users_model->insert_Photos($data)) {
+                        $this->profile($id);
+                    } else {
+                        $message = "Error during Upload";
+                        echo "<script type='text/javascript'> alert('$message');</script>";
+                    }
                 }
-
+                else {
+                    $this->profile($id);
+                }
 //                redirect(base_url());
             }
     }
@@ -147,7 +154,7 @@ class Welcome extends CI_Controller {
 
 	}
 
-	public function add_photos($id){
+	public function profile($id){
 
 	    $users['user']= $this->Users_model->get_User_By_Id($id);
         $users['files'] = $this->Users_model->get_Photos($id);
@@ -158,13 +165,19 @@ class Welcome extends CI_Controller {
 
         $this->load->library('multiple_uploads');
         $data = $this->multiple_uploads->multiple_uploads($id);
+        if($data != FALSE){
+            if ($this->Users_model->insert_Photos($data)) {
+                $this->profile($id);
+            } else {
+                $message = "Error during Upload";
+                echo "<script type='text/javascript'> alert('$message');</script>";
 
-        if ($this->Users_model->insert_Photos($data)) {
-            $this->add_photos($id);
-        } else {
-            $message = "Error during Upload";
-            echo "<script type='text/javascript'> alert('$message');</script>";
+            }
+        }else
+        {
+            $this->profile($id);
         }
+
 
     }
 
@@ -185,6 +198,18 @@ class Welcome extends CI_Controller {
         {
             return TRUE;
         }
+    }
+
+    public function phone_check($str){
+
+        if($this->Users_model->phone_check($str)){
+
+            return TRUE;
+        }else{
+            $this->form_validation->set_message('phone_check', 'The number is already taken');
+            return FALSE;
+        }
+
     }
 
 
@@ -232,7 +257,7 @@ class Welcome extends CI_Controller {
 //            if (!empty($uploadData)) {
 //                //Insert file information into the database
 //                if ($this->Users_model->insert_Photos($uploadData)) {
-//                    $this->add_photos($id);
+//                    $this->profile($id);
 //                } else {
 //                    $message = "Error during Upload";
 //                    echo "<script type='text/javascript'> alert('$message');</script>";
@@ -240,7 +265,7 @@ class Welcome extends CI_Controller {
 //
 //            }
 //        }
-//        $this->add_photos($id);
+//        $this->profile($id);
 //    }
 
 

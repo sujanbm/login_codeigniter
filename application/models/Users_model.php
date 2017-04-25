@@ -114,6 +114,19 @@ class Users_model extends CI_Model{
       }
   }
 
+  public function phone_check($phone){
+
+      $this->db->where(array('phone_number'=>$phone));
+      $query = $this->db->get('users');
+      if($query->num_rows() > 0){
+          return FALSE;
+      }else{
+          return TRUE;
+      }
+
+
+  }
+
 }
 
 ?>

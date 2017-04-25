@@ -4,7 +4,7 @@
 <br>
 <div class="row">
 
-       <form action="<?php echo site_url();?>/Welcome/add_user" class="form" role="form" method="post" enctype="multipart/form-data">
+       <form action="<?php echo site_url();?>/Welcome/add_user" class="form" role="form" method="post" enctype="multipart/form-data" id = "FormId">
            <div class="form-group">
                <label for="first_name">First Name</label>
                <?php echo form_error('first_name') ?>
@@ -48,4 +48,19 @@
            </div>
        </form>
    </div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var dataString = $("#FormId").serialize();
+        var url= "Welcome/add_user";
+        $.ajax({
+            type:"POST",
+            url:"<?php echo site_url() ?>"+url,
+            data:dataString,
+            success:function (data) {
+                alert(data);
+            }
+        });
+    })
+</script>
 <?php require_once("footer.php");?>

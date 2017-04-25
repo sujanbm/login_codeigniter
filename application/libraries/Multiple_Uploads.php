@@ -40,34 +40,23 @@ class Multiple_Uploads {
                     $uploadData[$i]['file_name'] = $fileData['file_name'];
                     $uploadData[$i]['contact_id'] = $id;
 
+                } else {
+                    $message = $CI->upload->display_errors();
+                    echo "<script type='text/javascript'>alert('$message');</script>";
                 }
-//            else{
-////                $message = $this->upload->display_errors();
-////                echo "<script type='text/javascript'>alert('$message');</script>";
-//            }
+            }
+            if (isset($uploadData)) {
+                return $uploadData;
+            } else {
+                $message = "Nothing to Upload";
+                echo "<script type='text/javascript'>alert('$message');</script>";
+                return FALSE;
             }
 
-            return $uploadData;
-
-
         }
 
-        else{
-            echo "No files to upload";
-        }
+        return FALSE;
 
     }
 
 }
-
-//if (!empty($uploadData)) {
-//    //Insert file information into the database
-//    if ($this->Users_model->insert_Photos($uploadData)) {
-//        $this->add_photos($id);
-//    } else {
-//        $message = "Error during Upload";
-//        echo "<script type='text/javascript'> alert('$message');</script>";
-//    }
-//
-//}
-//$this->add_photos($id);
