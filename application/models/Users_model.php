@@ -84,10 +84,15 @@ class Users_model extends CI_Model{
         $query = $this->db->get('photos');
 
         return $query->result();
-
-
     }
 
+    public function get_Photo($id){
+
+        $this->db->where(array('id'=>$id));
+        $query = $this->db->get('photos');
+        return $query->row();
+
+    }
     public function login(){
       $email = $this->input->post('email');
       $this->db->select('id, email, password, first_name');
@@ -120,6 +125,7 @@ class Users_model extends CI_Model{
       $this->db->trans_complete();
       if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
+
             return FALSE;
       }else{
             $this->db->trans_commit();
@@ -151,9 +157,7 @@ class Users_model extends CI_Model{
       }else{
           return TRUE;
       }
-
   }
-
 }
 
 ?>

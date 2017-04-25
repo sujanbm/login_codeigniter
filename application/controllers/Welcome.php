@@ -149,7 +149,15 @@ class Welcome extends CI_Controller {
 	}
 
 	public function delete($id){
+	    $photos = $this->Users_model->get_Photos($id);
+
         if($this->Users_model->delete_User($id)){
+            foreach ($photos as $photo){
+                $file_name = $photo->file_name;
+                $path = $_SERVER['DOCUMENT_ROOT'].'/Contact/uploads/'.$file_name;
+                unlink($path);
+
+            }
             redirect(base_url());
         }
 
@@ -186,13 +194,15 @@ class Welcome extends CI_Controller {
 
 
     public function delete_photo($userId, $photoId){
-
+        $photo = $this->Users_model->get_Photo($photoId);
+        $file_name = $photo->file_name;
         if($this->Users_model->delete_photo($userId, $photoId)){
+            $path = $_SERVER['DOCUMENT_ROOT'].'/Contact/uploads/'.$file_name;
+            unlink($path);
             $this->profile($userId);
         }else{
             echo "Error";
         }
-
     }
 
 	public function logout(){
