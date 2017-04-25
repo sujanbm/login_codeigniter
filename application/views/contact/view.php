@@ -1,5 +1,6 @@
 <?php require_once("header.php") ?>
 <h3>User List</h3>
+<h2><?php echo "Welcome ".$this->session->userdata['name']?></h2>
 <hr>
 <br>
   <div class="row">

@@ -29,8 +29,9 @@
         <?php foreach ($files as $file){?>
         <div class="col-sm-6 col-md-4">
             <a href="" class="thumbnail">
-                <img width="50%" height="auto" src="<?php echo base_url()?>/uploads/<?php echo $file->file_name ?>"/>
-            </a>
+                <img width="auto" height="200px" src="<?php echo base_url()?>/uploads/<?php echo $file->file_name ?>"/>
+            </a><br>
+            <a href="<?php echo site_url()?>/Welcome/delete_photo/<?php echo $user->id?>/<?php echo $file->id?>"><button type="button" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this picture?');">Delete</button></a>
 
         </div>
         <?php } ?>
@@ -38,18 +39,22 @@
 
 
 
-        <form class = "form" action="<?php echo site_url()?>/Welcome/files_upload/<?php echo $user->id ?>" method = "POST" enctype="multipart/form-data">
 
-            <div class="form-group">
-                <input type="file" name="files[]"  multiple id="files">
-            </div>
-
-            <div class="form-group">
-                <button class="btn btn-success">Upload</button>
-            </div>
-
-        </form>
 
 
     </div>
+
+    <?php echo $data; ?>
+
+    <form class = "form" action="<?php echo site_url()?>/Welcome/files_upload/<?php echo $user->id ?>" method = "POST" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <input type="file" name="files[]"  multiple id="files">
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-success">Upload</button>
+        </div>
+
+    </form>
 <?php include_once("footer.php");?>

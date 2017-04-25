@@ -49,6 +49,7 @@ class Welcome extends CI_Controller {
 //        var_dump($data);
         $this->load->helper('test');
         $data["test"] = test();
+
         $this->load->view('contact/view', $data);
 	}
 
@@ -158,6 +159,8 @@ class Welcome extends CI_Controller {
 
 	    $users['user']= $this->Users_model->get_User_By_Id($id);
         $users['files'] = $this->Users_model->get_Photos($id);
+        $this->load->library('calendar');
+        $users['data'] = $this->calendar->generate();
         $this->load->view('contact/user', $users);
     }
 
@@ -181,6 +184,17 @@ class Welcome extends CI_Controller {
 
     }
 
+
+    public function delete_photo($userId, $photoId){
+
+        if($this->Users_model->delete_photo($userId, $photoId)){
+            $this->profile($userId);
+        }else{
+            echo "Error";
+        }
+
+    }
+
 	public function logout(){
 	    $this->session->unset_userdata('logged_in');
         session_destroy();
@@ -189,7 +203,7 @@ class Welcome extends CI_Controller {
 
     public function name_check($str)
     {
-        if ($str == 'test')
+        if ($str == 'test' || $str == 'asdf' )
         {
             $this->form_validation->set_message('name_check', 'The {field} can not be the word "test"');
             return FALSE;

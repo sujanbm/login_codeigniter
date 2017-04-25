@@ -34,9 +34,12 @@ class Login extends CI_Controller {
                 {
                     $sess_array = array(
                         'id' => $result->id,
-                        'email' => $result->email
+                        'email' => $result->email,
+
                     );
                     $this->session->set_userdata('logged_in', $sess_array);
+                    $this->session->set_userdata('name', $result->first_name);
+                    $this->session->set_Flashdata('email', $result->first_name);
 //                return var_dump($this->session->userdata('logged_in'));
                     redirect('Welcome', 'refresh');
                 }

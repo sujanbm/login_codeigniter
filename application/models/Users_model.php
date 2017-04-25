@@ -51,8 +51,21 @@ class Users_model extends CI_Model{
   }
 
   public function delete_User($id){
-    $this->db->where('id', $id);
-    return $this->db->delete('users');
+      $this->db->trans_begin();
+      $this->db->where(array('contact_id'=>$id));
+      $this->db->delete('photos');
+      $this->db->where('id', $id);
+      $this->db->delete('users');
+      $this->db->trans_complete();
+      if($this->db->trans_status() === FALSE){
+          $this->db->trans_rollback();
+          return FALSE;
+      }
+      else{
+          $this->db->trans_commit();
+
+          return TRUE;
+      }
   }
 
   public function upload($files){
@@ -77,7 +90,7 @@ class Users_model extends CI_Model{
 
     public function login(){
       $email = $this->input->post('email');
-      $this->db->select('id, email, password');
+      $this->db->select('id, email, password, first_name');
       $this->db->from('users');
       $this->db->where(array('email'=>$email));
 
@@ -97,6 +110,21 @@ class Users_model extends CI_Model{
   public function record_count(){
 
         return $this->db->count_all('users');
+  }
+
+  public function delete_photo($userId, $photoId){
+
+      $this->db->trans_begin();
+      $this->db->where(array('id'=>$photoId, 'contact_id'=>$userId));
+      $this->db->delete('photos');
+      $this->db->trans_complete();
+      if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            return FALSE;
+      }else{
+            $this->db->trans_commit();
+             return TRUE;
+      }
   }
 
   public function fetch_users($limit, $start){
@@ -123,7 +151,6 @@ class Users_model extends CI_Model{
       }else{
           return TRUE;
       }
-
 
   }
 
